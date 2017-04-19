@@ -1,3 +1,37 @@
+# Patch for menu showed on hover
+The offset and outerWidth/outerHeight might not be possible to get for menu only showed on hover.  
+Two new options was added to support calculate those values from other element.  
+```
+$('#menu').menuAim({
+    offset: null, // callback function, get offset. e.g. function(){return {left: 100, top: 100}}
+    outerSize: null // e.g. {width: 200, height: 200}
+});
+```
+Usage:
+```
+var navTargetList = $('#nav_target_list');
+var navPathwayListOffsetBaseline = $('#nav_pathway_list ul').parent().parent().parent();
+$('#nav_pathway_list ul').menuAim({
+    outerSize: {
+        width: 278, // some magic numbers matching your CSS
+        height: 504
+    },
+    offset: function() {
+        var offsetBaseline = navPathwayListOffsetBaseline.offset();
+        return {
+            top: offsetBaseline.top + 48,
+            left: offsetBaseline.left
+        }
+    },
+    activate: function(row) {
+        // activate handle
+    }
+});
+```
+
+
+## Original information from [kamens/jQuery-menu-aim](https://github.com/kamens/jQuery-menu-aim)  
+
 jQuery-menu-aim
 ===============
 
@@ -5,7 +39,8 @@ menu-aim is a jQuery plugin for dropdown menus that can differentiate
 between a user trying hover over a dropdown item vs trying to navigate into
 a submenu's contents.
 
-[Try a demo.](https://rawgithub.com/kamens/jQuery-menu-aim/master/example/example.html)
+[Try a demo.](https://rawgithub.com/kamens/jQuery-menu-aim/master/example/example.html)  
+(kamens' demo, changes not included)
 
 ![Amazon screenshot](https://raw.github.com/kamens/jQuery-menu-aim/master/amazon.png)
 

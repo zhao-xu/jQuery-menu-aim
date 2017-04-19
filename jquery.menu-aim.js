@@ -95,7 +95,9 @@
                 exit: $.noop,
                 activate: $.noop,
                 deactivate: $.noop,
-                exitMenu: $.noop
+                exitMenu: $.noop,
+                offset: null, // callback function, get offset. eg. function(){return {left: 100, top: 100}}
+                outerSize: null // eg. {width: 200, height: 200}
             }, opts);
 
         var MOUSE_LOCS_TRACKED = 3,  // number of past mouse locations to track
@@ -202,25 +204,32 @@
                 return 0;
             }
 
-            var offset = $menu.offset(),
-                upperLeft = {
-                    x: offset.left,
-                    y: offset.top - options.tolerance
-                },
-                upperRight = {
-                    x: offset.left + $menu.outerWidth(),
-                    y: upperLeft.y
-                },
-                lowerLeft = {
-                    x: offset.left,
-                    y: offset.top + $menu.outerHeight() + options.tolerance
-                },
-                lowerRight = {
-                    x: offset.left + $menu.outerWidth(),
-                    y: lowerLeft.y
-                },
-                loc = mouseLocs[mouseLocs.length - 1],
-                prevLoc = mouseLocs[0];
+            var offset = options.offset;
+            if (offset) {
+                offset = offset();
+                // get real value, ignore type check
+            } else {
+                offset = $menu.offset();
+            }
+            var outerSize = options.outerSize || {width: $menu.outerWidth(), height: $menu.outerHeight()};
+            var upperLeft = {
+                x: offset.left,
+                y: offset.top - options.tolerance
+            };
+            var upperRight = {
+                x: offset.left + outerSize.width,
+                y: upperLeft.y
+            };
+            var lowerLeft = {
+                x: offset.left,
+                y: offset.top + outerSize.height + options.tolerance
+            };
+            var lowerRight = {
+                x: offset.left + outerSize.width,
+                y: lowerLeft.y
+            };
+            var loc = mouseLocs[mouseLocs.length - 1];
+            var prevLoc = mouseLocs[0];
 
             if (!loc) {
                 return 0;
